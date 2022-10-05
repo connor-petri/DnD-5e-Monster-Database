@@ -14,7 +14,7 @@ def set_up():
     for monster in MonsterFile.monster_generator(MonsterFile.monster_data):
         monster_dict[monster.getName().lower()] = monster
 
-    with open(".resources/saves.json", "r", encoding="utf8") as save_file:
+    with open("./resources/saves.json", "r", encoding="utf8") as save_file:
             file_obj = json.load(save_file)
             save_list = file_obj["save data"]
 
