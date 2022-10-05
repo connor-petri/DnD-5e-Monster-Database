@@ -1,6 +1,6 @@
 import json 
 
-with open("./data.json", "r", encoding="utf8") as data_object:
+with open("./resources/data.json", "r", encoding="utf8") as data_object:
     monster_data = json.load(data_object)
 
 
