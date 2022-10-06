@@ -1,32 +1,13 @@
 import PySimpleGUI as sg
-import json
 
-import resources.monster as MonsterFile
-import resources.layout as gui
 import resources.functions as functions
-
-
-# Setup for main function. Generates monster dictionary, loads save data, and initalizes main window from layout.py
-def set_up():
-
-    monster_dict = {}
-
-    for monster in MonsterFile.monster_generator(MonsterFile.monster_data):
-        monster_dict[monster.getName().lower()] = monster
-
-    with open("./resources/saves.json", "r", encoding="utf8") as save_file:
-            file_obj = json.load(save_file)
-            save_list = file_obj["save data"]
-
-    return monster_dict, gui.main(save_list), save_list
-
 
 
 # Main function. Sets up and runs event loop.
 def main():
 
     # Set up
-    monster_dict, window, save_list = set_up()
+    monster_dict, window, save_list = functions.set_up()
 
     #Window event loop
     while True:
@@ -64,7 +45,7 @@ def main():
 
     
     # When window is closed or event loop is broken, dump save data and close the window.
-    functions.dump_save_data('./saves.json', save_list)
+    functions.dump_save_data('./resources./saves.json', save_list)
     window.close()
 
 

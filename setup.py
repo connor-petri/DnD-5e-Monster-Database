@@ -3,6 +3,7 @@ import sys
 import os
 import platform
 
+
 def brew_install(package):
     os.system(f'brew install {package}')
 
@@ -30,11 +31,11 @@ def main():
     if platform.system() == "Windows":
         windows_install()
 
-    if platform.system == 'macOS':
+    if platform.system() in ('Darwin', 'macOS'):
         mac_install()
     
     
 
 if __name__ == '__main__':
-
+    
     main()
