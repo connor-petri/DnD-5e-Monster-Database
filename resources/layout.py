@@ -10,13 +10,13 @@ def main(save_list):
     col1 = [
         [sg.Text("Saved Monsters:")],
         [sg.Input(key='-SAVE_IN-'), sg.B('Add', k='-ADD-')],
-        [sg.Listbox((save_list), k='-SAVES-', s=(40, 60), enable_events=True)],
+        [sg.Listbox((save_list), k='-SAVES-', s=(40, 30), enable_events=True)],
         [sg.B('Delete', k='-DELETE-')]
         ]
 
     #Search Result Display
     col2 = [
-        [sg.Multiline(k='-OUT-'+sg.WRITE_ONLY_KEY, s=(120, 80))]
+        [sg.Multiline(k='-OUT-'+sg.WRITE_ONLY_KEY, s=(120, 40))]
         ]
 
 
@@ -28,4 +28,4 @@ def main(save_list):
         ]
 
     # Returns window object. Set window = layout.main()
-    return sg.Window('Monster Search', layout)
+    return sg.Window('Monster Search', layout, resizable=True)
