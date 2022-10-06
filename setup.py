@@ -12,21 +12,10 @@ def pip_install(package):
 
 
 def mac_install():
+
     brew_install('pyenv')
     brew_install('tcl-tk')
 
-    while True:
-        user_input = input('shell or virtualenv?').lower()
-
-        if user_input=='shell':
-            os.system('pyenv shell 3.10.6')
-            break
-
-        elif user_input == 'virtualenv':
-            os.system('pyenv virtualenv 3.10.6 5e_monster_database')
-            os.system('pyenv activate 5e_monster_database')
-            break
-    
     pip_install('PySimpleGUI')
 
 
