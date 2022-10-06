@@ -7,8 +7,7 @@ Install homebrew
 
   Run setup.py:
   
-    This will install pyenv and tcl-tk through homebrew if you dont already have them installed.
-    It will then create a pyenv shell and install PySimpleGUI in that shell.
+    This will install pyenv and tcl-tk through homebrew and PySimpleGUI through pip if you dont already have them installed.
     
 Windows:
 
