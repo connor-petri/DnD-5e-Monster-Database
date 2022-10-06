@@ -16,13 +16,13 @@ def mac_install():
     brew_install('tcl-tk')
 
     while True:
-        input = input('shell or virtualenv?').lower()
+        user_input = input('shell or virtualenv?').lower()
 
-        if input=='shell':
+        if user_input=='shell':
             os.system('pyenv shell 3.10.6')
             break
 
-        elif input == 'virtualenv':
+        elif user_input == 'virtualenv':
             os.system('pyenv virtualenv 3.10.6 5e_monster_database')
             os.system('pyenv activate 5e_monster_database')
             break
