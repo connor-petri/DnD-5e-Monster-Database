@@ -33,14 +33,16 @@ def window_set_up():
     }
 
 
-    if sys.platform == 'Windows':
+    if sys.platform == 'win32':
+        
+        primary = 'Footlight MT Light'
 
         fonts = {
-        'b1': (primary, 20, 'bold'),
-        'b2': (primary, 14, 'bold'),
-        'i1': (primary, 16, 'italic'),
-        't1': (primary, 16),
-        't2': (primary, 20)
+        'b1': (primary, 16, 'bold'),
+        'b2': (primary, 12, 'bold'),
+        'i1': (primary, 12, 'italic'),
+        't1': (primary, 12),
+        't2': (primary, 16)
         }
     
 
