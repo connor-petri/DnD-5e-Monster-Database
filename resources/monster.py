@@ -1,10 +1,13 @@
 import json 
+import textwrap
 
-with open("./resources/data.json", "r", encoding="utf8") as data_object:
-    monster_data = json.load(data_object)
+def load_monster_data():
+    with open("./resources/data.json", "r", encoding="utf8") as data_object:
+        monster_data = json.load(data_object)
+    return monster_data
 
 
-# Tools
+# Used in parsing methods.
 def merge_dict_list(dict_list):
     merged_dict = {}
     for i in dict_list:
@@ -50,6 +53,10 @@ class Monster:
         self._reactions = monster_dict.get("reactions", None)
         self._source = monster_dict.get("source", None)
 
+        self.text_wrap_max = 63
+
+
+    # Getters
     def getImage(self):
         return self._image
     def getName(self):
@@ -102,113 +109,119 @@ class Monster:
         return self._source
 
 
+    def add_stat_modifier(self, stat):
+
+        if stat % 2 != 0:
+            stat -= 1
+
+        modifier = stat - 10
+
+        if modifier >= 0:
+            return f'{stat} (+{modifier})'
+        else:
+            return f'{stat} ({modifier})'
+
+
     def parse_saves(self):
         saves_dict = merge_dict_list(self.getSaves())
         output = ""
+
         for key, value in saves_dict.items():
+            if value is None:
+                break
+
             stat = key[:3].upper()
             output += f"{stat}: {value}, "
+        
         return output[:-2]
+
 
     def parse_skillsaves(self):
         skillsaves_dict = merge_dict_list(self.getSkillSaves())
         output = ""
-        for key, value in skillsaves_dict.items():
-            output += f"{key}, {value}, "
-        return output[:-2]
-    
-    # used for traits, actions, and legenday actions
-    def parse_actions(self, list):
 
-        output = '''
-        |'''
+        for key, value in skillsaves_dict.items():
+            if value is None:
+                break
+
+            output += f"{key}, {value}, "
+
+        return textwrap.fill(output[:-2], 80)
+    
+
+    # used for traits, actions, and legenday actions
+    def parse_actions(self, list, header, text_wrap_max):
+        output = f'{header}\n\n'
 
         for action in list:
             name = action["name"]
             desc = action["desc"]
-            
-            new_action = f"""
-        |   {name}:
-        |   {desc[:120]}"""
-
-            if len(desc) > 120:
-                new_action += f'''
-        |   {desc[120:240]}'''
-
-            if len(desc) > 240:
-                new_action += f'''
-        |   {desc[240:360]}'''
-
-            if len(desc) > 360:
-                    new_action += f'''
-        |   {desc[360:480]}'''
-
-            if len(desc) > 480:
-                    new_action += f'''
-        |   {desc[480:600]}'''
-
-            new_action += '''
-        |'''
-            output += new_action
+    
+            output += textwrap.fill(f'{name}: {desc}', text_wrap_max) + '\n\n'
         
-        output +='''_______________________________________________________________________________________________________'''
-
         return output
+
 
     def parse_spells(self):
-
-        output = '''
-        |
-        |'''
+        output = 'Spells:\n\n'
+        title = True
 
         for line in self.getSpells():
-            if len(line) > 120:
-                split_line = line.split("). ")
-                output += f'''  {split_line[0]}).
-        |  {split_line[1]}
-        |'''
+            output += line + '\n'
 
-            else:
-                output += f'''
-        |   {line} '''
-
-
-        output +='''
-        |_______________________________________________________________________________________________________'''
+            if title:
+                output += '\n'
+                title = False
 
         return output
 
 
+    def make_stat_block(self, window):
 
-    def make_stat_block(self):
-        main_body = f'''
-         _______________________________________________________________________________________________________
-        |
-        |   {self.getName()}
-        |   {self.getSize().title()} {self.getType().title()}, {self.getAlignment().title()}
-        |
-        |_______________________________________________________________________________________________________
-        |
-        |   Armor Class: {self.getAc()}
-        |   Hit Points: {self.getHp()} ({self.getHitDice()})
-        |   Speed: {self.getSpeed()}
-        |_______________________________________________________________________________________________________
-        |
-        |   STR: {self.getStats()[0]}   DEX: {self.getStats()[1]}   CON: {self.getStats()[2]}
-        | 
-        |   INT: {self.getStats()[3]}   WIS: {self.getStats()[4]}   CHA: {self.getStats()[5]}
-        |_______________________________________________________________________________________________________
-        |
-        |   Saving Throws: {self.parse_saves()}
-        |   Skills: {self.parse_skillsaves()}
-        |   Damage Vulnerabilities: {self.getDamageVulnerabilities()} 
-        |   Damage Resistances: {self.getDamageResistances()}
-        |   Damage Immunities: {self.getDamageImmunities()}
-        |   Condition Immunities: {self.getConditionImmunities()}
-        |   Languages: {self.getLanguages()}
-        |   Challenge: {self.getCr()}
-        |_______________________________________________________________________________________________________'''
-        main_body += self.parse_actions(self.getTraits()) + self.parse_spells() + self.parse_actions(self.getActions()) + self.parse_actions(self.getLegendaryActions())
-        return main_body
+        def update_value(key, value):
+            window[key].update(value)
+
+
+        # If you add a new thing to the stat block or layout that you want updated from this method,
+        # include the element key and the value you want passed to it in run_dict as a key: value pair.
+        run_dict = {
+            '-name-': self.getName(),
+            '-size_type_alignment-': f'{self.getSize()} {self.getType()}, {self.getAlignment()}',
+            # ----------------------------------------------------------
+            '-ac-': self.getAc(),
+            '-hp-': f'{self.getHp()} ({self.getHitDice()})',
+            '-speed-': self.getSpeed(),
+            # ----------------------------------------------------------
+            '-str-': self.add_stat_modifier(self.getStats()[0]),
+            '-dex-': self.add_stat_modifier(self.getStats()[1]),
+            '-con-': self.add_stat_modifier(self.getStats()[2]),
+            '-int-': self.add_stat_modifier(self.getStats()[3]),
+            '-wis-': self.add_stat_modifier(self.getStats()[4]),
+            '-cha-': self.add_stat_modifier(self.getStats()[5]),
+            # ----------------------------------------------------------
+            '-saving_throws-': self.parse_saves(),
+            '-skillsaves-': self.parse_skillsaves(),
+            '-d_vulnerabilities-': textwrap.fill(self.getDamageVulnerabilities(), self.text_wrap_max),
+            '-d_resistances-': textwrap.fill(self.getDamageResistances(), self.text_wrap_max),
+            '-d_immunities-': textwrap.fill(self.getDamageImmunities(), self.text_wrap_max),
+            '-c_immunities-': textwrap.fill(self.getConditionImmunities(), self.text_wrap_max),
+            '-senses-': textwrap.fill(self.getSenses(), self.text_wrap_max),
+            '-languages-': textwrap.fill(self.getLanguages(), self.text_wrap_max),
+            '-cr-': self.getCr(),
+            # ----------------------------------------------------------
+            '-traits-': self.parse_actions(self.getTraits(), 'Traits:', 75),
+            # ----------------------------------------------------------
+            '-spells-': self.parse_spells(),
+            # ----------------------------------------------------------
+            '-actions-': self.parse_actions(self.getActions(), 'Actions:', self.text_wrap_max),
+            # ----------------------------------------------------------
+            '-legendary_actions-': self.parse_actions(self.getLegendaryActions(), 'Legendary Actions:', self.text_wrap_max)
+        }
+
+
+        for key, value in run_dict.items():
+            update_value(key, value)
+    
+    
 
 
