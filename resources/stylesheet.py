@@ -16,7 +16,7 @@ def window_set_up():
     primary = 'American Typewriter'
     fonts = {
         'b1': (primary, 20, 'bold'),
-        'b2': (primary, 14, 'bold'),
+        'b2': (primary, 16, 'bold'),
         'i1': (primary, 16, 'italic'),
         't1': (primary, 16),
         't2': (primary, 20)
