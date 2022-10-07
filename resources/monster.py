@@ -111,15 +111,17 @@ class Monster:
 
     def add_stat_modifier(self, stat):
 
-        if stat % 2 != 0:
-            stat -= 1
-
         modifier = stat - 10
 
+        if modifier % 2 != 0:
+            modifier -= 1
+
+        modifier /= 2
+
         if modifier >= 0:
-            return f'{stat} (+{modifier})'
+            return f'{stat} (+{int(modifier)})'
         else:
-            return f'{stat} ({modifier})'
+            return f'{stat} ({int(modifier)})'
 
 
     def parse_saves(self):
