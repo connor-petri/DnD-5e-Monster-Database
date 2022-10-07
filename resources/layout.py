@@ -6,7 +6,7 @@ import resources.stylesheet as stylesheet
 # Set window = layout.main() when using this in main.py
 def make_window(save_list):
 
-    f = stylesheet.fonts()
+    f, si = stylesheet.window_set_up()
 
     sg.theme('Custom 1')   
 
@@ -39,8 +39,8 @@ def make_window(save_list):
     # Save data input, listbox, and buttons
     col1 = [
         [sg.Text("Saved Monsters:", font=f['t1'])],
-        [sg.Input(key='-SAVE_IN-', font=f['t1'], s=(30, 1)), sg.B('Add', k='-ADD-', font=f['t1'])],
-        [sg.Listbox((save_list), k='-SAVES-', s=(25, 35), font=f['t2'], enable_events=True)],
+        [sg.Input(key='-SAVE_IN-', font=f['t1'], s=(si['-SAVE_IN-'][0], si['-SAVE_IN-'][1])), sg.B('Add', k='-ADD-', font=f['t1'])],
+        [sg.Listbox((save_list), k='-SAVES-', s=(si['-SAVES-'][0], si['-SAVES-'][1]), font=f['t2'], enable_events=True)],
         [sg.B('Save', k='-SAVE_DATA-', font=f['t1']), sg.Push(), sg.B('Delete', k='-DELETE-', font=f['t1'])]
         ]
 
@@ -71,15 +71,15 @@ def make_window(save_list):
         [sg.T('Challenge', font=f['b2']), sg.T('', k='-cr-', font=f['t1'])],
 
         [sg.HSeparator()], # Traits
-        [sg.Multiline('Traits', k='-traits-', s=(60, 20), disabled=True, font=f['t1'])],
+        [sg.Multiline('Traits', k='-traits-', s=(si['-traits-'][0], si['-traits-'][1]), disabled=True, font=f['t1'])],
         ]
 
     stat_block_2 = [
-        [sg.Multiline('Spells', k='-spells-', font=f['t1'], disabled=True, s=(70, 10))],
+        [sg.Multiline('Spells', k='-spells-', font=f['t1'], disabled=True, s=(si['-spells-'][0], si['-spells-'][1]))],
         [sg.HSeparator()],
-        [sg.Multiline('Actions', k='-actions-', font=f['t1'], disabled=True, s=(70, 25))],
+        [sg.Multiline('Actions', k='-actions-', font=f['t1'], disabled=True, s=(si['-actions-'][0], si['-actions-'][1]))],
         [sg.HSeparator()],
-        [sg.Multiline('Legendary Actions', k='-legendary_actions-', font=f['t1'], disabled=True, s=(70, 12))]
+        [sg.Multiline('Legendary Actions', k='-legendary_actions-', font=f['t1'], disabled=True, s=(si['-legendary_actions-'][0], si['-legendary_actions-'][1]) )]
         ]
 
 
