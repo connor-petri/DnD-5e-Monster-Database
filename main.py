@@ -13,7 +13,9 @@ def main():
     while True:
 
         event, values = window.read()
-        print(event, values)
+
+        # Uncomment for debugging:
+        # print(event, values)
     
         # Breaks event loop if window is closed
         if event in (sg.WIN_CLOSED, 'Exit'):
@@ -29,8 +31,7 @@ def main():
                 search_queary = values['-SAVES-'][0].lower()
             
             if search_queary in monster_dict.keys():
-                window['-OUT-'+sg.WRITE_ONLY_KEY].update('')
-                window['-OUT-'+sg.WRITE_ONLY_KEY].print(monster_dict[search_queary].make_stat_block())
+                monster_dict[search_queary].make_stat_block(window)
 
 
         # Add save functionality
@@ -43,9 +44,13 @@ def main():
             print(values['-SAVES-'])
             save_list = functions.delete_save(window, save_list, values['-SAVES-'][0])
 
+
+        if event == '-SAVE_DATA-':
+            functions.user_save_data(save_list)
+
     
     # When window is closed or event loop is broken, dump save data and close the window.
-    functions.dump_save_data('./resources./saves.json', save_list)
+    functions.dump_save_data(save_list)
     window.close()
 
 
